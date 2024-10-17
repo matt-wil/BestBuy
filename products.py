@@ -1,7 +1,7 @@
 class Product:
     def __init__(self, name, price, quantity):
         self.name = name
-        self.price = price
+        self.price = float(price)
         self.quantity = quantity
         self.active = True
         if self.name == "":
@@ -12,7 +12,7 @@ class Product:
             raise ValueError("Invalid Quantity")
 
     def get_quantity(self):
-        return f"There are {self.quantity} {self.name}`s available currently."
+        return self.quantity
 
     def set_quantity(self, quantity):
         self.quantity += quantity
@@ -35,26 +35,7 @@ class Product:
         if self.quantity >= quantity:
             self.quantity -= quantity
             cost = self.price * quantity
-            return f"{quantity} {self.name}'s will cost: €{cost}"
+            return cost
         else:
             raise ValueError(f"Sorry we only have {self.quantity} {self.name}`s available.")
 
-
-# Tester main
-def main():
-    bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
-    mac = Product("MacBook Air M2", price=1450, quantity=100)
-
-    print(bose.buy(50))
-    print(mac.buy(100))
-    print(mac.is_active())
-
-    bose.show()
-    mac.show()
-
-    bose.set_quantity(1000)
-    bose.show()
-
-
-if __name__ == '__main__':
-    main()

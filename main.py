@@ -27,7 +27,7 @@ def print_menu():
     print("4. Quit")
 
 
-def exit_func():
+def exit_func(*args):
     """
     Exit function to safely quit the program
     printing a farewell message and using sys.exit()"""

@@ -14,7 +14,10 @@ best_buy = Store(product_list)
 
 
 def print_menu():
-    # display menu
+    """
+    Displaying the shop menu options.
+    print statements displaying all options available for the user.
+    """
     print("\t----------")
     print("\tStore Menu")
     print("\t----------")
@@ -25,11 +28,20 @@ def print_menu():
 
 
 def exit_func():
+    """
+    Exit function to safely quit the program
+    printing a farewell message and using sys.exit()"""
     print("Thanks for shopping at Best Buy!")
     sys.exit()
 
 
 def start(store_obj: Store):
+    """
+    starting the main program loop to interact with the user.
+    display the menu, takes the users input and uses a dispatcher dictionary to activate the correct
+    functions based on the users input.
+    :param store_obj: Store(object) store object that holds product inventory and supports the shop operations.
+    """
     print("Welcome to Best Buy!")
 
     dispatcher = {
@@ -52,6 +64,12 @@ def start(store_obj: Store):
 
 
 def list_products(store: Store):
+    """
+    Lists all the active products in the store.
+    fetches active products from the store and prints them numbered.
+    if there are no products available a message is printed.
+    :param store: Store(object) containing the product inventory.
+    """
     products = store.get_all_products()
     if not products:
         print("No products available in the store")
@@ -62,11 +80,27 @@ def list_products(store: Store):
 
 
 def show_total_quantity(store: Store):
+    """
+    shows the quantity of items available in the store.
+    runs the get_total_quantity() function from the store
+    printing a formatted string to display total number of available items.
+    :param store: Store(object) containing product inventory.
+    :return:
+    """
     total_quantity = store.get_total_quantity()
     print(f"\nTotal quantity of items in the store: {total_quantity}")
 
 
 def make_order(store: Store):
+    """
+    Handles the product ordering process.
+    display a list of numbered active products and the quantity of said item available.
+    asks the user to input which number product and the quantity they would like to purchase.
+    appending the selections to the shopping list, once the user is done they enter an empty string as an input
+    in order to process the purchase order. The total cost is calculated and then displayed to the user
+    If any invalid inputs are entered the appropriate print statements are printed.
+    :param store: Store(object) the object where the order is being placed.
+    """
     products = store.get_all_products()
     if not products:
         print("No products available for order")
@@ -91,6 +125,11 @@ def make_order(store: Store):
                 continue
 
             quantity = int(input(f"How many {products[product_index].name} would you like?\n>>> "))
+            if quantity > products[product_index].get_quantity():
+                print(f"I'm sorry we only have {products[product_index].get_quantity()} available.")
+                time.sleep(2)
+                continue
+
             shopping_list.append((products[product_index], quantity))
 
         except ValueError:

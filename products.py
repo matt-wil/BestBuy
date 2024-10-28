@@ -45,7 +45,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
-        if self.name == "":
+        if not self.name or self.name.isspace():
             raise ValueError("Invalid Name")
         if self.price < 1:
             raise ValueError("Invalid Price")

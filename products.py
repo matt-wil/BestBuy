@@ -1,3 +1,6 @@
+import math
+
+
 class Product:
     """
     This class creates a product object for a store.
@@ -112,4 +115,74 @@ class Product:
             self.deactivate()
 
         return self.price * quantity
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=1)
+        self.quantity = math.inf
+
+    def show(self) -> str:
+        """
+        returns an F-string of the product. showing the name price and Unlimited as this is a non-stocked product.
+        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: Unlimited
+        """
+        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+
+    def get_quantity(self) -> str:
+        """Returning unlimited as a string to show non-stocked status"""
+        return "Unlimited"
+
+    def set_quantity(self, quantity: int):
+        """raises ValueError when trying to set quantity for non-stocked product"""
+        raise ValueError("Cannot set quantity for a non-stocked product")
+
+    def buy(self, quantity: int) -> float:
+        """
+        Allow the purchase of any quantity without reducing the stock.
+        :param quantity: (int) quantity to be purchased
+        :return: (float) total cost of the quantity
+        :raise: ValueError if quantity <= 0
+        """
+        if quantity <= 0:
+            raise ValueError("Purchased quantity must be greater than 0")
+        return self.price * quantity
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum=1):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity: int) -> float:
+        """
+        processes a purchase of the given products' quantity.
+        updates the quantity and deactivates it if it is 0.
+        returning the total cost of the quantity given.
+        raises a ValueError if the purchase quantity is less or equal to 0.
+        :param quantity: (int) quantity of a product to be purchased.
+        :return: (float) total cost of said quantity of product.
+        """
+        if quantity <= 0:
+            raise ValueError("Purchased quantity must be greater than 0")
+        if quantity > self.quantity:
+            raise ValueError("Not enough stock available")
+        if quantity > self.maximum:
+            raise ValueError("The maximum amount per order is 1")
+
+        self.quantity -= quantity
+        if self.quantity == 0:
+            self.deactivate()
+
+        return self.price * quantity
+
+    def show(self) -> str:
+        """
+        returns an F-string of the product. showing the name price and Unlimited as this is a non-stocked product.
+        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: Unlimited
+        """
+        return f"{self.name}, Price: {self.price}, Limited to 1 per order!"
+
+
+
 

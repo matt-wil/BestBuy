@@ -1,6 +1,6 @@
 import time
 
-from products import Product
+from products import Product, NonStockedProduct, LimitedProduct
 from store import Store
 import sys
 
@@ -8,7 +8,9 @@ import sys
 # setup initial stock of inventory
 product_list = [Product("MacBook Air M2", price=1450, quantity=100),
                 Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                Product("Google Pixel 7", price=500, quantity=250)
+                Product("Google Pixel 7", price=500, quantity=250),
+                NonStockedProduct("Windows License", price=125),
+                LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
                 ]
 best_buy = Store(product_list)
 
@@ -125,7 +127,7 @@ def make_order(store: Store):
                 continue
 
             quantity = int(input(f"How many {products[product_index].name} would you like?\n>>> "))
-            if quantity > products[product_index].get_quantity():
+            if products[product_index].get_quantity() != "Unlimited" and quantity > products[product_index].get_quantity():
                 print(f"I'm sorry we only have {products[product_index].get_quantity()} available.")
                 time.sleep(2)
                 continue

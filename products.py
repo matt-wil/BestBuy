@@ -1,4 +1,5 @@
 import math
+from promotions import Promotion
 
 
 class Product:
@@ -48,12 +49,19 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None
         if not self.name or self.name.isspace():
             raise ValueError("Invalid Name")
         if self.price < 1:
             raise ValueError("Invalid Price")
         if self.quantity < 1:
             raise ValueError("Invalid Quantity")
+
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion: Promotion):
+        self.promotion = promotion
 
     def get_quantity(self) -> int:
         """
@@ -91,10 +99,14 @@ class Product:
 
     def show(self) -> str:
         """
-        returns an F-string of the product. showing the name price and quantity.
-        :return: (F-Str) Product details in format. (name), Price: (price), Quantity:(quantity)
+        returns an F-string of the product. showing the name price and quantity and promotion details.
+        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: (quantity), Promotion: (type)
         """
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        promotion_info = f", Promotion: {self.promotion.label}" if self.promotion else ""
+        return (f"{self.name}, "
+                f"Price: {self.price}, "
+                f"Quantity: {self.quantity}"
+                f"{promotion_info}")
 
     def buy(self, quantity: int) -> float:
         """
@@ -110,11 +122,17 @@ class Product:
         if quantity > self.quantity:
             raise ValueError("Not enough stock available")
 
+        # calculate price with promotions
+        if self.promotion:
+            price = self.promotion.apply_promotion(self, quantity)
+        else:
+            price = self.price * quantity
+
         self.quantity -= quantity
         if self.quantity == 0:
             self.deactivate()
 
-        return self.price * quantity
+        return price
 
 
 class NonStockedProduct(Product):

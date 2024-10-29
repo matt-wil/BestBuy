@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from products import Product
+from products import Product, NonStockedProduct
 
 
 class Store:
@@ -37,6 +37,8 @@ class Store:
         """
         total = 0
         for product in self.list_of_products:
+            if isinstance(product, NonStockedProduct):
+                continue  # skip the non-stocked products
             total += product.quantity
         return total
 

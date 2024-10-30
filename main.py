@@ -5,24 +5,37 @@ from store import Store
 import sys
 
 
+# # setup initial stock of inventory
+# product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
+#                  Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+#                  Product("Google Pixel 7", price=500, quantity=250),
+#                  NonStockedProduct("Windows License", price=125),
+#                  LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
+#                ]
+#
+# # Create promotion catalog
+# second_half_price = SecondHalfPrice("Second Half price!")
+# third_one_free = ThirdOneFree("Third One Free!")
+# thirty_percent = PercentDiscount("30% off!", percent=30)
+#
+# # Add promotions to products
+# product_list[0].set_promotion(second_half_price)
+# product_list[1].set_promotion(third_one_free)
+# product_list[3].set_promotion(thirty_percent)
+# best_buy = Store(product_list)
+
 # setup initial stock of inventory
-product_list = [ Product("MacBook Air M2", price=1450, quantity=100),
-                 Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                 Product("Google Pixel 7", price=500, quantity=250),
-                 NonStockedProduct("Windows License", price=125),
-                 LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
-               ]
 
-# Create promotion catalog
-second_half_price = SecondHalfPrice("Second Half price!")
-third_one_free = ThirdOneFree("Third One Free!")
-thirty_percent = PercentDiscount("30% off!", percent=30)
+mac = Product("MacBook Air M2", price=1450, quantity=100)
+bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+pixel = Product("Google Pixel 7", price=500, quantity=250)
 
-# Add promotions to products
-product_list[0].set_promotion(second_half_price)
-product_list[1].set_promotion(third_one_free)
-product_list[3].set_promotion(thirty_percent)
-best_buy = Store(product_list)
+best_buy = Store([mac, bose])
+mac.price = -100          # Should give error
+print(mac)                # Should print `MacBook Air M2, Price: $1450 Quantity:100`
+print(mac > bose)         # Should print True
+print(mac in best_buy)    # Should print True
+print(pixel in best_buy)  # Should print False
 
 
 def print_menu():
@@ -88,7 +101,7 @@ def list_products(store: Store):
     else:
         print("\n Available Products")
         for i, product in enumerate(products):
-            print(f"{i+1}. {product.show()}")
+            print(f"{i+1}. {product}")
 
 
 def show_total_quantity(store: Store):
@@ -124,7 +137,7 @@ def make_order(store: Store):
 
     while True:
         for i, product in enumerate(products):
-            print(f"{i + 1}. {product.show()}")
+            print(f"{i + 1}. {product}")
 
         product_choice = input("Which product # do you want?\n>>> ")
         if not product_choice:
@@ -137,8 +150,8 @@ def make_order(store: Store):
                 continue
 
             quantity = int(input(f"How many {products[product_index].name} would you like?\n>>> "))
-            if products[product_index].get_quantity() != "Unlimited" and quantity > products[product_index].get_quantity():
-                print(f"I'm sorry we only have {products[product_index].get_quantity()} available.")
+            if products[product_index]._quantity != "Unlimited" and quantity > products[product_index]._quantity:
+                print(f"I'm sorry we only have {products[product_index]._quantity} available.")
                 time.sleep(2)
                 continue
 

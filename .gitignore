@@ -3,3 +3,4 @@ test.py
 .idea/
 __pycache__/
 plan.txt
+receipt.py

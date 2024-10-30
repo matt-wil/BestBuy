@@ -39,7 +39,7 @@ class Store:
         for product in self.list_of_products:
             if isinstance(product, NonStockedProduct):
                 continue  # skip the non-stocked products
-            total += product.quantity
+            total += product._quantity
         return total
 
     def get_all_products(self) -> List[Product]:
@@ -67,4 +67,10 @@ class Store:
             total_cost += product.buy(amount)
         return total_cost
 
+    # dunder methods
+    def __contains__(self, item):
+        return item in self.list_of_products
 
+    def __add__(self, other):
+        combined_stores = self.list_of_products + other.list_of_products
+        return Store(combined_stores)

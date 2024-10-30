@@ -46,38 +46,53 @@ class Product:
         :param quantity: (int) the quantity of the product
         """
         self.name = name
-        self.price = price
-        self.quantity = quantity
+        self._price = price
+        self._quantity = quantity
         self.active = True
-        self.promotion = None
+        self._promotion = None
         if not self.name or self.name.isspace():
             raise ValueError("Invalid Name")
-        if self.price < 1:
+        if self._price < 1:
             raise ValueError("Invalid Price")
-        if self.quantity < 1:
+        if self._quantity < 1:
             raise ValueError("Invalid Quantity")
 
-    def get_promotion(self):
-        return self.promotion
+    @property
+    def price(self):
+        return self._price
 
-    def set_promotion(self, promotion: Promotion):
-        self.promotion = promotion
+    @price.setter
+    def price(self, new_price):
+        if new_price > 0:
+            self._price = new_price
+        else:
+            print("Invalid Price!")
 
-    def get_quantity(self) -> int:
+    @property
+    def promotion(self):
+        return self._promotion
+
+    @promotion.setter
+    def promotion(self, promotion: Promotion):
+        self._promotion = promotion
+
+    @property
+    def quantity(self) -> int:
         """
         returns the total quantity of the product
         :return: (int) total amount of the product
         """
-        return self.quantity
+        return self._quantity
 
-    def set_quantity(self, quantity: int):
+    @quantity.setter
+    def quantity(self, quantity: int):
         """
         updates the total quantity of the product by adding given amount.
         deactivates the product if the quantity is or below 0.
         :param quantity: (int) amount to be added to quantity
         """
-        self.quantity += quantity
-        if self.quantity <= 0:
+        self._quantity += quantity
+        if self._quantity <= 0:
             self.deactivate()
 
     def is_active(self) -> bool:
@@ -97,17 +112,6 @@ class Product:
         """Deactivates a product by setting its active status to False"""
         self.active = False
 
-    def show(self) -> str:
-        """
-        returns an F-string of the product. showing the name price and quantity and promotion details.
-        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: (quantity), Promotion: (type)
-        """
-        promotion_info = f", Promotion: {self.promotion.label}" if self.promotion else ""
-        return (f"{self.name}, "
-                f"Price: {self.price}, "
-                f"Quantity: {self.quantity}"
-                f"{promotion_info}")
-
     def buy(self, quantity: int) -> float:
         """
         processes a purchase of the given products' quantity.
@@ -119,39 +123,59 @@ class Product:
         """
         if quantity <= 0:
             raise ValueError("Purchased quantity must be greater than 0")
-        if quantity > self.quantity:
+        if quantity > self._quantity:
             raise ValueError("Not enough stock available")
 
         # calculate price with promotions
         if self.promotion:
             price = self.promotion.apply_promotion(self, quantity)
         else:
-            price = self.price * quantity
+            price = self._price * quantity
 
-        self.quantity -= quantity
-        if self.quantity == 0:
+        self._quantity -= quantity
+        if self._quantity == 0:
             self.deactivate()
 
         return price
+
+    # dunder methods
+    def __str__(self) -> str:
+        """
+        returns an F-string of the product. showing the name price and quantity and promotion details.
+        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: (quantity), Promotion: (type)
+        """
+        promotion_info = f", Promotion: {self.promotion.label}" if self.promotion else ""
+        return (f"{self.name}, "
+                f"Price: {self._price}, "
+                f"Quantity: {self._quantity}"
+                f"{promotion_info}")
+
+    def __gt__(self, other):
+        return self._price > other._price
+
+    def __lt__(self, other):
+        return self._price < other._price
 
 
 class NonStockedProduct(Product):
     def __init__(self, name, price):
         super().__init__(name, price, quantity=1)
-        self.quantity = math.inf
+        self._quantity = math.inf
 
-    def show(self) -> str:
+    def __str__(self) -> str:
         """
         returns an F-string of the product. showing the name price and Unlimited as this is a non-stocked product.
         :return: (F-Str) Product details in format. (name), Price: (price), Quantity: Unlimited
         """
         return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
 
-    def get_quantity(self) -> str:
+    @property
+    def quantity(self) -> str:
         """Returning unlimited as a string to show non-stocked status"""
         return "Unlimited"
 
-    def set_quantity(self, quantity: int):
+    @quantity.setter
+    def quantity(self, quantity: int):
         """raises ValueError when trying to set quantity for non-stocked product"""
         raise ValueError("Cannot set quantity for a non-stocked product")
 
@@ -194,12 +218,12 @@ class LimitedProduct(Product):
 
         return self.price * quantity
 
-    def show(self) -> str:
+    def __str__(self) -> str:
         """
         returns an F-string of the product. showing the name price and Unlimited as this is a non-stocked product.
         :return: (F-Str) Product details in format. (name), Price: (price), Quantity: Unlimited
         """
-        return f"{self.name}, Price: {self.price}, Limited to 1 per order!"
+        return f"{self.name}, Price: {self._price}, Limited to 1 per order!"
 
 
 

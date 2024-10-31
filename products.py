@@ -210,7 +210,7 @@ class LimitedProduct(Product):
         if quantity > self.quantity:
             raise ValueError("Not enough stock available")
         if quantity > self.maximum:
-            raise ValueError("The maximum amount per order is 1")
+            raise ValueError(f"The maximum amount per order is {self.maximum}")
 
         self.quantity -= quantity
         if self.quantity == 0:

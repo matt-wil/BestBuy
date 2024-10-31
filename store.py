@@ -69,8 +69,18 @@ class Store:
 
     # dunder methods
     def __contains__(self, item):
+        """
+        checks if a product is in the stores list of products.
+        :param item: (Product) The product to the check for in the store
+        :return: (bool) True if the product is in the store else False
+        """
         return item in self.list_of_products
 
     def __add__(self, other):
+        """
+        combines the products from two store creating a new Store object
+        :param other: (Store) the other store instance to combine with this store
+        :return: (Store) a new Store instance containing the products from both stores
+        """
         combined_stores = self.list_of_products + other.list_of_products
         return Store(combined_stores)

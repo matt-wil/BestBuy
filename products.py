@@ -59,10 +59,15 @@ class Product:
 
     @property
     def price(self):
+        """return price of Product"""
         return self._price
 
     @price.setter
-    def price(self, new_price):
+    def price(self, new_price: float):
+        """
+        set the price of a Product if price is greater than 0
+        :param new_price: (float) new price of product
+        """
         if new_price > 0:
             self._price = new_price
         else:
@@ -70,10 +75,14 @@ class Product:
 
     @property
     def promotion(self):
+        """returns current promotion on the Product."""
         return self._promotion
 
     @promotion.setter
     def promotion(self, promotion: Promotion):
+        """sets a promotion for a product.
+        :param promotion: (Promotion) the promotion class to be set on the product.
+        """
         self._promotion = promotion
 
     @property
@@ -151,14 +160,35 @@ class Product:
                 f"{promotion_info}")
 
     def __gt__(self, other):
+        """
+        compare price of this product with other
+        :param other: (Product) another product.
+        :return: (bool) True if greater than
+        """
         return self._price > other._price
 
     def __lt__(self, other):
+        """
+        compare price of this product with other
+        :param other: (Product) another product.
+        :return: (bool) True if less than
+        """
         return self._price < other._price
 
 
 class NonStockedProduct(Product):
-    def __init__(self, name, price):
+    """
+    This class is a child class of the Product class for products with "Unlimited" stock of Non-stocked Products.
+    Methods:
+        quantity: Returns "Unlimited" as a string
+        buy: Process the purchase of any quantity of the product without reducing stock.
+    """
+    def __init__(self, name: str, price: float):
+        """
+        initialize the Product with unlimited stock.
+        :param name: (str) Product name
+        :param price: (float) the price of the product
+        """
         super().__init__(name, price, quantity=1)
         self._quantity = math.inf
 
@@ -192,7 +222,19 @@ class NonStockedProduct(Product):
 
 
 class LimitedProduct(Product):
-    def __init__(self, name, price, quantity, maximum=1):
+    """
+    another child class of the Product class allowing only a limited number of the items purchase per order.
+    Attribute:
+        :maximum (int) controls the limit per order.
+    """
+    def __init__(self, name: str, price: float, quantity: int, maximum=1):
+        """
+        initialize the LimitedProduct instance with a maximum purchase limit.
+        :param name: (str) name of product.
+        :param price: (float) price of product
+        :param quantity: (int) quantity of the product
+        :param maximum: (int) maximum limit purchase per order.
+        """
         super().__init__(name, price, quantity)
         self.maximum = maximum
 
@@ -221,9 +263,9 @@ class LimitedProduct(Product):
     def __str__(self) -> str:
         """
         returns an F-string of the product. showing the name price and Unlimited as this is a non-stocked product.
-        :return: (F-Str) Product details in format. (name), Price: (price), Quantity: Unlimited
+        :return: (F-Str) Product details in format. (name), Price: (price), Order limit: (maximum)
         """
-        return f"{self.name}, Price: {self._price}, Limited to 1 per order!"
+        return f"{self.name}, Price: {self._price}, Limited to {self.maximum} per order!"
 
 
 

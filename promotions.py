@@ -1,55 +1,68 @@
 from abc import ABC, abstractmethod
+from products import Product
 
 
 class Promotion(ABC):
     """
-    Abstract base class for different types of promotions able to be placed on a product
-        Attributes:
-                label (str): the label to describe the promotion.
-        Methods:
-            apply_promotion: Abstract method to calculate the total cost after applying the promotion
+    Abstract base class for different types of promotions that can be applied to a product.
+
+    Attributes:
+        label (str): The label describing the promotion.
+
+    Methods:
+        __init__(label): Initializes the Promotion with a label.
+        apply_promotion(product, quantity): Calculates the total cost after applying the promotion.
     """
+
     def __init__(self, label: str):
         """
-        initialize the promotion with the label to describe the promotion.
-        :param label:
+        Initializes the promotion with a label describing the promotion.
+
+        :param label: (str) The label of the promotion.
         """
         self.label = label
 
     @abstractmethod
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
         """
-        Calculates the discount price based on promotion and returns the total cost
-        :param product: (Product) the product which the promotion is applied
-        :param quantity: (int) the number of units of the product being purchased
-        :return: (float): total cost after applying the promotion.
+        Calculates the total cost after applying the promotion.
+
+        :param product: (Product) The product to which the promotion is applied.
+        :param quantity: (int) The number of units of the product being purchased.
+        :return: (float) The total cost after applying the promotion.
         """
         pass
 
 
 class PercentDiscount(Promotion):
     """
-    Child class of Promotion that adds a certain percentage discount to the product price.
-    Attribute:
-        discount_percentage (float): the percentage discount applied - float for percentage calculations without casting
+    Promotion that applies a percentage discount to the product price.
+
+    Attributes:
+        discount_percentage (float): The percentage discount to apply.
+
     Methods:
+        __init__(label, percent): Initializes the promotion with a label and percentage discount.
         apply_promotion: Applies the percentage discount and returns the discounted total cost.
     """
+
     def __init__(self, label: str, percent: float):
         """
-        initialize the PercentageDiscount promotion with a label and discount percentage.
-        :param label: (str) The label describing the promotion
-        :param percent: (float) the discount percentage to apply.
+        Initializes the PercentDiscount promotion with a label and discount percentage.
+
+        :param label: (str) The label describing the promotion.
+        :param percent: (float) The discount percentage to apply.
         """
         super().__init__(label)
         self.discount_percent = percent
 
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
         """
-        Applies percentage discount to the products price
-        :param product: (Product) the product to which the promotion is applied
-        :param quantity: (int) the number of units of the product being purchased.
-        :return: (float) total cost after discount percentage applied.
+        Applies the percentage discount to the product's price.
+
+        :param product: (Product) The product to which the promotion is applied.
+        :param quantity: (int) The number of units of the product being purchased.
+        :return: (float) The total cost after applying the discount percentage.
         """
         discount_amount = product.price * (self.discount_percent / 100)
         return (product.price - discount_amount) * quantity
@@ -57,23 +70,27 @@ class PercentDiscount(Promotion):
 
 class SecondHalfPrice(Promotion):
     """
-    Child class of Promotion offers every second item at half price
+    Promotion that offers every second item at half price.
+
     Methods:
-        apply_promotion: Calculates the total cost with every second item priced at half price
+        apply_promotion: Calculates the total cost with every second item priced at half price.
     """
+
     def __init__(self, label: str):
         """
-        initializes the SecondHalfPrice promotion with a label
-        :param label: (str) the label describing the promotion.
+        Initializes the SecondHalfPrice promotion with a label.
+
+        :param label: (str) The label describing the promotion.
         """
         super().__init__(label)
 
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
         """
-        applied the second item at half price promotion
-        :param product: (Product) the product to which the promotion is applied
-        :param quantity: (int) total amount of units of the product being purchased
-        :return: (float) total cost of the order after promotion applied.
+        Applies the second item at half price promotion.
+
+        :param product: (Product) The product to which the promotion is applied.
+        :param quantity: (int) The total number of units of the product being purchased.
+        :return: (float) The total cost after applying the promotion.
         """
         pairs = quantity // 2
         remaining = quantity % 2
@@ -83,27 +100,29 @@ class SecondHalfPrice(Promotion):
 
 class ThirdOneFree(Promotion):
     """
-    Child class of Promotion that offers 1 free item for every 3 purchased.
+    Promotion that offers one free item for every three purchased.
+
     Methods:
-        apply_promotion: calculates total cost with one free item for every sset of three
+        apply_promotion: Calculates the total cost with one free item for every set of three.
     """
+
     def __init__(self, label: str):
         """
-        initializes the ThirdOneFree promotion
-        :param label: (str) label describing the promotion
+        Initializes the ThirdOneFree promotion with a label.
+
+        :param label: (str) The label describing the promotion.
         """
         super().__init__(label)
 
-    def apply_promotion(self, product, quantity) -> float:
+    def apply_promotion(self, product: Product, quantity: int) -> float:
         """
-        applied the third item free promotion
-        :param product: (Product) the product to which the promotion is applied
-        :param quantity: (int) the number of units of the product being purchased
-        :return: (float) the total cost of the order after promotion applied.
+        Applies the third item free promotion.
+
+        :param product: (Product) The product to which the promotion is applied.
+        :param quantity: (int) The number of units of the product being purchased.
+        :return: (float) The total cost after applying the promotion.
         """
         groups_of_three = quantity // 3
         remaining = quantity % 3
         total_cost = (groups_of_three * 2 * product.price) + (remaining * product.price)
         return total_cost
-
-

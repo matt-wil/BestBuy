@@ -1,5 +1,5 @@
 import math
-from promotions import Promotion
+from promotions_abc import Promotion
 
 
 class Product:
